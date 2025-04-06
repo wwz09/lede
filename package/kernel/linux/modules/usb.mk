@@ -521,7 +521,7 @@ $(eval $(call KernelPackage,usb-dwc3))
 
 define KernelPackage/usb-dwc3-qcom
   TITLE:=DWC3 Qualcomm USB driver
-  DEPENDS:=@(TARGET_ipq40xx||TARGET_ipq806x||TARGET_qualcommax) +kmod-usb-dwc3
+  DEPENDS:=@(TARGET_ipq40xx||TARGET_ipq806x||TARGET_qualcommax||TARGET_qualcommbe) +kmod-usb-dwc3
   KCONFIG:= CONFIG_USB_DWC3_QCOM
   FILES:= $(LINUX_DIR)/drivers/usb/dwc3/dwc3-qcom.ko
   AUTOLOAD:=$(call AutoLoad,53,dwc3-qcom,1)
@@ -576,7 +576,7 @@ define KernelPackage/usb-audio
 	CONFIG_SND_USB_AUDIO
   $(call AddDepends/usb)
   $(call AddDepends/sound)
-  DEPENDS += +LINUX_6_1:kmod-media-core
+  DEPENDS+=+(LINUX_6_1||LINUX_6_6):kmod-media-core
   FILES:= \
 	$(LINUX_DIR)/sound/usb/snd-usbmidi-lib.ko \
 	$(LINUX_DIR)/sound/usb/snd-usb-audio.ko
@@ -654,6 +654,22 @@ define KernelPackage/usb-serial-ch341/description
 endef
 
 $(eval $(call KernelPackage,usb-serial-ch341))
+
+
+define KernelPackage/usb-serial-ch348
+  TITLE:=Support for CH348 devices
+  KCONFIG:=CONFIG_USB_SERIAL_CH348
+  FILES:=$(LINUX_DIR)/drivers/usb/serial/ch348.ko
+  AUTOLOAD:=$(call AutoProbe,ch348)
+  DEPENDS:=@(LINUX_6_1||LINUX_6_6)
+  $(call AddDepends/usb-serial)
+endef
+
+define KernelPackage/usb-serial-ch348/description
+ Kernel support for Winchiphead CH348 USB-to-8x-Serial converters
+endef
+
+$(eval $(call KernelPackage,usb-serial-ch348))
 
 
 define KernelPackage/usb-serial-edgeport
@@ -1423,11 +1439,11 @@ $(eval $(call KernelPackage,usb-net-rtl8150))
 
 define KernelPackage/usb-net-rtl8152
   TITLE:=Kernel module for USB-to-Ethernet Realtek convertors
-  DEPENDS:=+r8152-firmware +kmod-crypto-sha256 +kmod-usb-net-cdc-ncm
+  DEPENDS:=+r8152-firmware +kmod-crypto-sha256 +kmod-mii
   KCONFIG:=CONFIG_USB_RTL8152
   FILES:=$(LINUX_DIR)/drivers/$(USBNET_DIR)/r8152.ko
   AUTOLOAD:=$(call AutoProbe,r8152)
-  $(call AddDepends/usb-net, +LINUX_5_10:kmod-crypto-hash)
+  $(call AddDepends/usb, +LINUX_5_10:kmod-crypto-hash)
 endef
 
 define KernelPackage/usb-net-rtl8152/description

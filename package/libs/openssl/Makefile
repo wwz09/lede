@@ -8,7 +8,7 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=openssl
-PKG_VERSION:=3.0.15
+PKG_VERSION:=3.0.16
 PKG_RELEASE:=1
 PKG_USE_MIPS16:=0
 PKG_BUILD_FLAGS:=gc-sections no-lto
@@ -19,7 +19,7 @@ PKG_BASE:=$(subst $(space),.,$(wordlist 1,2,$(subst .,$(space),$(PKG_VERSION))))
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
 PKG_SOURCE_URL:=https://github.com/openssl/openssl/releases/download/$(PKG_NAME)-$(PKG_VERSION)/
 
-PKG_HASH:=23c666d0edf20f14249b3d8f0368acaee9ab585b09e1de82107c66e1f3ec9533
+PKG_HASH:=57e03c50feab5d31b152af2b764f10379aecd8ee92f16c985983ce4a99f7ef86
 
 PKG_LICENSE:=Apache-2.0
 PKG_LICENSE_FILES:=LICENSE
@@ -68,7 +68,7 @@ endif
 
 define Package/openssl/Default
   TITLE:=Open source SSL toolkit
-  URL:=http://www.openssl.org/
+  URL:=https://www.openssl.org/
   SECTION:=libs
   CATEGORY:=Libraries
 endef
@@ -401,7 +401,9 @@ define Package/libopenssl/install
 	chmod 0700 $(1)/etc/ssl/private
 	$(INSTALL_DIR) $(1)/usr/lib
 	$(INSTALL_DATA) $(PKG_INSTALL_DIR)/usr/lib/libcrypto.so.* $(1)/usr/lib/
+	$(LN) libcrypto.so.3 $(1)/usr/lib/libcrypto.so.1.1
 	$(INSTALL_DATA) $(PKG_INSTALL_DIR)/usr/lib/libssl.so.* $(1)/usr/lib/
+	$(LN) libssl.so.3 $(1)/usr/lib/libssl.so.1.1
 	$(if $(CONFIG_OPENSSL_ENGINE),$(INSTALL_DIR) $(1)/usr/lib/$(ENGINES_DIR))
 endef
 
